@@ -290,6 +290,24 @@
         .modal-input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 0.95rem;}
         select.modal-input { background: white; }
         .hint-text { font-size: 0.8rem; color: #888; margin-top: 3px; }
+        
+        /* 連結按鈕樣式 */
+        .link-btn {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #f8f9fa;
+            color: #333;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .link-btn:active { background-color: #e2e6ea; }
 
         @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
         .hidden { display: none !important; }
@@ -440,6 +458,30 @@
                 <div class="hint-text">* Applies auto-crop unless set to FULL.</div>
             </div>
 
+            <div class="modal-group" style="border-top: 1px solid #eee; padding-top: 15px; margin-top: 15px;">
+                <label>📊 Project Data Sheets (各站點報表)</label>
+                
+                <button class="link-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/1GcnAkIHAhnVjrH9bO9TQbdTUwQT17XtyQWUPh7WSTLA/edit?gid=0#gid=0', '_blank')">
+                    <span>📑 MX Maintenance (Sheet)</span>
+                    <span>↗</span>
+                </button>
+
+                <button class="link-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/1SWMy51SZugHcAJjLPIV3-d3zBMicvEtsHUo1LGPSvBA/edit?gid=0#gid=0', '_blank')">
+                    <span>📑 CT Maintenance (Sheet)</span>
+                    <span>↗</span>
+                </button>
+
+                <button class="link-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/19O2drZ6wRL39jBia3IAME5wOACZ0O2HdnXeM8Y09MKM/edit?gid=0#gid=0', '_blank')">
+                    <span>📑 EX Maintenance (Sheet)</span>
+                    <span>↗</span>
+                </button>
+
+                <button class="link-btn" onclick="window.open('https://docs.google.com/spreadsheets/d/15wgIGp-xznIL20HNsQgtQPijoZKEtNdE_2VTbt0rJjU/edit?gid=0#gid=0', '_blank')">
+                    <span>📑 CL Maintenance (Sheet)</span>
+                    <span>↗</span>
+                </button>
+            </div>
+
             <div style="text-align: center; color: var(--primary-color); font-size: 0.9em; margin-top: 15px;">
                 <p>✅ Cloud Paths are Locked (System Mode)</p>
             </div>
@@ -454,7 +496,10 @@
     
     // --- 固定路徑 ---
     const FIXED_SCRIPT_ID = "AKfycbzTDioUw8L5vZ9H3rUEB-df_sSmJ4kg86NFraktwmU4-qtiESh_u_tZPnyIsUOW9LaK/exec";
+    
+    // 使用 MX 的 Sheet ID 作為此 App 的預設存檔位置 (與您提供的第一個連結一致)
     const FIXED_SHEET_ID = "1GcnAkIHAhnVjrH9bO9TQbdTUwQT17XtyQWUPh7WSTLA";
+    
     const FIXED_FOLDER_ID = "1MCaCvWS73lyPd90yMXnDrD5BqiEw7O08";
 
     let processedImageBase64 = ""; 
@@ -463,8 +508,8 @@
     // 錄音狀態
     let isRecording = false; 
     let isManualStop = false; 
-    let voiceTimer = null;            
-    let countdownInterval = null;     
+    let voiceTimer = null;             
+    let countdownInterval = null;      
     let punctuationTimer = null; 
     let timeLeft = 0; 
     let snapshotText = ""; 
@@ -494,6 +539,9 @@
         if(input === storedPass) {
             localStorage.setItem("isLoggedIn", "true");
             showApp();
+            
+            // 自動聚焦工號
+            setTimeout(() => { document.getElementById('input-worker-id').focus(); }, 300);
         } else {
             alert("Wrong Password! (密碼錯誤)");
         }
@@ -815,7 +863,7 @@
 
     function saveToCloud() {
         const note = document.getElementById('noteInput').value;
-        const workerId = document.getElementById('input-worker-id').value; // 抓取工號
+        const workerId = document.getElementById('input-worker-id').value; 
         const folderId = FIXED_FOLDER_ID;
         const scriptUrl = `https://script.google.com/macros/s/${FIXED_SCRIPT_ID}/exec`;
 
@@ -823,7 +871,6 @@
             alert("Empty! Please take a photo or write a note."); return;
         }
 
-        // 記憶工號
         if(workerId) {
             localStorage.setItem("worker_id", workerId);
         }
